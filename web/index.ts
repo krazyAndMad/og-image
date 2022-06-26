@@ -165,7 +165,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
       'div',
       { className: 'pull-right' },
       H(ImagePreview, {
-        src: 'http://localhost:3000/0x487b068009c7094fe8dc9452bc804f1129709288-461.png',
+        src: 'overrideUrl ? overrideUrl.href : url.href',
         loading: loading,
         onload: () => setState({ loading: false }),
         onerror: () => {

@@ -21,12 +21,6 @@ export function parseRequest(req: IncomingMessage) {
   const [collection, token] = text.split('-')
 
   return {
-    collection: '0x487b068009c7094fe8dc9452bc804f1129709288',
-    token: '461',
-    fileType: 'png',
-  } as ParsedRequest
-
-  return {
     collection,
     token,
     fileType: extension === 'jpeg' ? extension : 'png',

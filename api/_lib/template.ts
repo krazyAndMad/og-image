@@ -69,7 +69,7 @@ function getCss() {
 export function getHtml(parsedReq: ParsedRequest) {
   const { collection, token } = parsedReq
   const collectionImages = images[collection as keyof typeof images] || {}
-  const imageUrl = collectionImages[token as keyof typeof collectionImages]
+  const imageUrl = collectionImages[Number(token)]?.url || ''
 
   if (!imageUrl) {
     throw new Error(`No image found for ${collection}/${token}`)
