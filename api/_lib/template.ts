@@ -1,146 +1,103 @@
+import { sanitizeHtml } from './sanitizer'
+import { ParsedRequest } from './types'
+import images from '../../config'
 
-import { readFileSync } from 'fs';
-import { marked } from 'marked';
-import { sanitizeHtml } from './sanitizer';
-import { ParsedRequest } from './types';
-const twemoji = require('twemoji');
-const twOptions = { folder: 'svg', ext: '.svg' };
-const emojify = (text: string) => twemoji.parse(text, twOptions);
-
-const rglr = readFileSync(`${__dirname}/../_fonts/Inter-Regular.woff2`).toString('base64');
-const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString('base64');
-const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
-
-function getCss(theme: string, fontSize: string) {
-    let background = 'white';
-    let foreground = 'black';
-    let radial = 'lightgray';
-
-    if (theme === 'dark') {
-        background = 'black';
-        foreground = 'white';
-        radial = 'dimgray';
-    }
-    return `
-    @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
+function getCss() {
+  return `
+    * {
+        box-sizing: border-box;
     }
 
-    @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: bold;
-        src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
-    }
+    :root {
+        --background: black;
 
-    @font-face {
-        font-family: 'Vera';
-        font-style: normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
-      }
+        --primary: #ff1ead;
+        --secondary: #1effc3;
+        
+        --card-size: 300px;
+    }
 
     body {
-        background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
-        background-size: 100px 100px;
         height: 100vh;
-        display: flex;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-    }
-
-    code {
-        color: #D400FF;
-        font-family: 'Vera';
-        white-space: pre-wrap;
-        letter-spacing: -5px;
-    }
-
-    code:before, code:after {
-        content: '\`';
-    }
-
-    .logo-wrapper {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
-    }
-
-    .logo {
-        margin: 0 75px;
-    }
-
-    .plus {
-        color: #BBB;
-        font-family: Times New Roman, Verdana;
-        font-size: 100px;
-    }
-
-    .spacer {
-        margin: 150px;
-    }
-
-    .emoji {
-        height: 1em;
-        width: 1em;
-        margin: 0 .05em 0 .1em;
-        vertical-align: -0.1em;
-    }
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        background: linear-gradient(45deg, #343434, #000000);
+        font-family: 'Source Code Pro', monospace;
     
-    .heading {
-        font-family: 'Inter', sans-serif;
-        font-size: ${sanitizeHtml(fontSize)};
-        font-style: normal;
-        color: ${foreground};
-        line-height: 1.8;
-    }`;
+        text-rendering: optimizelegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .pfp {
+        width: calc(var(--card-size) * 1.586);
+        height: var(--card-size);
+        object-fit: cover;
+        object-position: 30% 40%;
+    }
+
+    .card {
+        transform: rotate(-5deg);
+        overflow: hidden;
+        width: calc(var(--card-size) * 1.586);
+        height: var(--card-size);
+    
+        border-radius: 0.75rem;
+        box-shadow:  0 22px 70px 4px rgba(0,0,0,0.56), 0 0 0 1px rgba(0, 0, 0, 0.3);
+        
+        background: black;
+    
+        display: grid;
+        grid-template-columns: 40% auto;
+        color: white;
+        
+        align-items: center;
+        
+        will-change: transform;
+        transition: transform 0.25s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+        
+        &:hover {
+            transform: scale(1.1);
+            box-shadow:  0 32px 80px 14px rgba(0,0,0,0.36), 0 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+    }
+`
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
-    return `<!DOCTYPE html>
-<html>
-    <meta charset="utf-8">
-    <title>Generated Image</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        ${getCss(theme, fontSize)}
-    </style>
-    <body>
-        <div>
-            <div class="spacer">
-            <div class="logo-wrapper">
-                ${images.map((img, i) =>
-                    getPlusSign(i) + getImage(img, widths[i], heights[i])
-                ).join('')}
+  const { collection, token } = parsedReq
+  const collectionImages = images[collection as keyof typeof images] || {}
+  const imageUrl = collectionImages[token as keyof typeof collectionImages]
+
+  if (!imageUrl) {
+    throw new Error(`No image found for ${collection}/${token}`)
+  }
+
+  return `<!DOCTYPE html>
+    <html>
+        <meta charset="utf-8">
+        <title>Generated Image</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500" rel="stylesheet">
+        <style>
+            ${getCss()}
+        </style>
+        <body>
+            <div class="card">
+                ${getImage(imageUrl)}
             </div>
-            <div class="spacer">
-            <div class="heading">${emojify(
-                md ? marked(text) : sanitizeHtml(text)
-            )}
-            </div>
-        </div>
-    </body>
-</html>`;
+        </body>
+    </html>`
 }
 
-function getImage(src: string, width ='auto', height = '225') {
-    return `<img
-        class="logo"
+function getImage(src: string, width = 'auto', height = '225') {
+  return `<img
+        class="pfp"
         alt="Generated Image"
         src="${sanitizeHtml(src)}"
         width="${sanitizeHtml(width)}"
         height="${sanitizeHtml(height)}"
     />`
-}
-
-function getPlusSign(i: number) {
-    return i === 0 ? '' : '<div class="plus">+</div>';
 }

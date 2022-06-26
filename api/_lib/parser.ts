@@ -4,15 +4,7 @@ import { ParsedRequest } from './types'
 
 export function parseRequest(req: IncomingMessage) {
   console.log('HTTP ' + req.url)
-  const { pathname, query } = parse(req.url || '/', true)
-  const { fontSize, image, width, height, theme, md } = query || {}
-
-  if (Array.isArray(fontSize)) {
-    throw new Error('Expected a single fontSize')
-  }
-  if (Array.isArray(theme)) {
-    throw new Error('Expected a single theme')
-  }
+  const { pathname } = parse(req.url || '/', true)
 
   const arr = (pathname || '/').slice(1).split('.')
   let extension = ''
@@ -26,26 +18,17 @@ export function parseRequest(req: IncomingMessage) {
     text = arr.join('.')
   }
 
-  const parsedRequest: ParsedRequest = {
+  const [collection, token] = text.split('-')
+
+  return {
+    collection: '0x487b068009c7094fe8dc9452bc804f1129709288',
+    token: '461',
+    fileType: 'png',
+  } as ParsedRequest
+
+  return {
+    collection,
+    token,
     fileType: extension === 'jpeg' ? extension : 'png',
-    text: `My Favorite NFT Friend is **${decodeURIComponent(text)}**`,
-    theme: theme === 'dark' ? 'dark' : 'light',
-    md: md === '1' || md === 'true',
-    fontSize: fontSize || '75px',
-    images: getArray(image),
-    widths: getArray(width),
-    heights: getArray(height),
-  }
-
-  return parsedRequest
-}
-
-function getArray(stringOrArray: string[] | string | undefined): string[] {
-  if (typeof stringOrArray === 'undefined') {
-    return []
-  } else if (Array.isArray(stringOrArray)) {
-    return stringOrArray
-  } else {
-    return [stringOrArray]
-  }
+  } as ParsedRequest
 }
