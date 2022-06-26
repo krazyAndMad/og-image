@@ -23,7 +23,7 @@ function getCss() {
         display: grid;
         place-items: center;
         padding: 1rem;
-        background: linear-gradient(45deg, #343434, #000000);
+        background: linear-gradient(45deg, #CB4198, #000000);
         font-family: 'Source Code Pro', monospace;
     
         text-rendering: optimizelegibility;
