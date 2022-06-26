@@ -133,7 +133,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
     showToast = false,
     messageToast = '',
     loading = true,
-    overrideUrl = null,
   } = state
 
   const url = new URL(window.location.origin)
