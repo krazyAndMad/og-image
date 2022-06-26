@@ -14,7 +14,7 @@ function getCss() {
         --primary: #ff1ead;
         --secondary: #1effc3;
         
-        --card-size: 300px;
+        --card-size: 800px;
     }
 
     body {
@@ -32,7 +32,7 @@ function getCss() {
     }
 
     .pfp {
-        width: calc(var(--card-size) * 1.586);
+        width: calc(var(--card-size) * 1.54);
         height: var(--card-size);
         object-fit: cover;
         object-position: 30% 40%;
@@ -41,7 +41,7 @@ function getCss() {
     .card {
         transform: rotate(-5deg);
         overflow: hidden;
-        width: calc(var(--card-size) * 1.586);
+        width: calc(var(--card-size) * 1.54);
         height: var(--card-size);
     
         border-radius: 0.75rem;
