@@ -1,10 +1,10 @@
-import shyGhostSquad from './shyghostsquad.json'
-import ghostproject from './ghostsproject.json'
+import shyghostSquad from './shyghostsquad.json'
+import ghostsproject from './ghostsproject.json'
 import supernormalbyzipcy from './supernormalbyzipcy.json'
 
 const images = {
-  shyGhostSquad,
-  ghostproject,
+  shyghostSquad,
+  ghostsproject,
   supernormalbyzipcy,
 }
 
