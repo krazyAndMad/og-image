@@ -1,7 +1,11 @@
-import shyGhostSquad from './0x487b068009c7094fe8dc9452bc804f1129709288.json'
+import shyGhostSquad from './shyghostsquad.json'
+import ghostproject from './ghostsproject.json'
+import supernormalbyzipcy from './supernormalbyzipcy.json'
 
 const images = {
-  '0x487b068009c7094fe8dc9452bc804f1129709288': shyGhostSquad,
+  shyGhostSquad,
+  ghostproject,
+  supernormalbyzipcy,
 }
 
 export default images
